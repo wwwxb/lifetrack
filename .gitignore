@@ -1,0 +1,6 @@
+lifetrack.html
+data/prepared.json
+_tmp/
+_*.html
+node_modules/
+.DS_Store
