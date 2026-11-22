@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>LifeTrack · 迹录 —— 你的生活画像</title>
+<meta name="description" content="把 Apple 健康里散落的碎片数据拼成属于你的生活画像：全记录汇总、步履轨迹、耳机听觉档案、热力刻度。全程在本机浏览器解析，文件不会上传。">
+<meta name="theme-color" content="#080b16">
+<meta property="og:type" content="website">
+<meta property="og:title" content="LifeTrack · 迹录 —— 你的生活画像">
+<meta property="og:description" content="把 Apple 健康里散落的碎片数据拼成属于你的生活画像：全记录汇总、步履轨迹、耳机听觉档案、热力刻度。全程在本机解析，文件不上传。">
+<meta property="og:image" content="og.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%237dd3fc'/%3E%3Cstop offset='1' stop-color='%23a78bfa'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='64' height='64' rx='16' fill='%230b1020'/%3E%3Cpath d='M14 44c7 0 7-16 14-16s7 16 14 16 8-8 8-16' fill='none' stroke='url(%23g)' stroke-width='5' stroke-linecap='round'/%3E%3C/svg%3E">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="backdrop" aria-hidden="true">
+  <span class="orb orb-a"></span>
+  <span class="orb orb-b"></span>
+  <span class="orb orb-c"></span>
+  <span class="orb orb-d"></span>
+  <span class="orb orb-e"></span>
+  <span class="beams"></span>
+  <span class="grain"></span>
+</div>
+
+<header class="topbar">
+  <a class="brand" href="./">
+    <span class="brand-mark">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M4 18c3 0 3-6 6-6s3 6 6 6 4-3 4-7"/>
+        <circle cx="4" cy="18" r="1.5" fill="currentColor" stroke="none"/>
+        <circle cx="20" cy="11" r="1.5" fill="currentColor" stroke="none"/>
+      </svg>
+    </span>
+    <span>
+      <span class="brand-name">LifeTrack</span>
+      <span class="brand-sub" data-i18n="brand.sub">迹录 · 生活画像</span>
+    </span>
+  </a>
+  <div class="top-actions">
+    <button class="pill-btn" id="restart" hidden>
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M17 3l4 4-4 4"/><path d="M21 7H9a5 5 0 0 0 0 10h3"/></svg>
+      <span data-i18n="top.restart">换个文件</span>
+    </button>
+    <button class="icon-btn" id="langBtn" title="Language" aria-label="Language">EN</button>
+    <button class="icon-btn" id="skinBtn" title="Skin" aria-label="Skin">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <path d="M12 21a9 9 0 1 1 9-9c0 2-1.6 3-3.5 3H16a2 2 0 0 0-1.4 3.4c.5.5.7 1 .4 1.6-.3.6-1.2 1-2 1Z"/>
+        <circle cx="8" cy="10" r="1.2" fill="currentColor" stroke="none"/><circle cx="12" cy="7.5" r="1.2" fill="currentColor" stroke="none"/><circle cx="16" cy="10" r="1.2" fill="currentColor" stroke="none"/>
+      </svg>
+    </button>
+  </div>
+  <div class="skin-pop" id="skinPop" hidden>
+    <h4 data-i18n="skin.title">皮肤</h4>
+    <div class="skin-grid" id="skinGrid"></div>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <!-- ---------------- intro ---------------- -->
+  <section class="view" id="intro">
+    <div class="hero">
+      <div>
+        <p class="eyebrow" data-i18n="intro.eyebrow">APPLE 健康 · 生活画像</p>
+        <h1>
+          <span data-i18n="intro.h1a">把散落的碎片，</span><br>
+          <span class="grad" data-i18n="intro.h1b">拼成你的生活画像</span>
+        </h1>
+        <p class="lead" data-i18n="intro.lead">步数、耳机、心跳、能量——这些年散落在健康数据十几个角落里的碎片，在这里重新拼起来。选择 iPhone「健康」导出的压缩包，全程在本机浏览器里解析，文件不会上传。</p>
+      </div>
+
+      <div>
+        <div class="card drop" id="drop" tabindex="0" role="button" aria-label="选择导出文件">
+          <div class="drop-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 16V4"/><path d="M7 9l5-5 5 5"/><path d="M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/>
+            </svg>
+          </div>
+          <div class="drop-title" data-i18n="intro.drop">选择导出文件</div>
+          <div class="drop-sub" data-i18n="intro.dropSub">export.zip 或 export.xml · 也可以直接拖进来</div>
+          <div class="drop-actions">
+            <button class="pill-btn primary" id="pick" data-i18n="intro.pick">选择文件</button>
+            <button class="pill-btn" id="sample" data-i18n="intro.sample">先看一份真实样例</button>
+          </div>
+          <input type="file" id="file" accept=".zip,.xml,application/zip,text/xml" hidden>
+          <div class="alert" id="introErr" hidden></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="steps">
+      <div class="card step">
+        <span class="num">1</span>
+        <div><b data-i18n="intro.s1t">打开 iPhone 上的「健康」</b><span data-i18n="intro.s1d">点右上角的头像</span></div>
+      </div>
+      <div class="card step">
+        <span class="num">2</span>
+        <div><b data-i18n="intro.s2t">滑到最底部，点「导出所有健康数据」</b><span data-i18n="intro.s2d">生成要几分钟，记录越多越久</span></div>
+      </div>
+      <div class="card step">
+        <span class="num">3</span>
+        <div><b data-i18n="intro.s3t">存到「文件」，再回到这里选择它</b><span data-i18n="intro.s3d">建议先存「我的 iPhone」，避免 iCloud 未下载完</span></div>
+      </div>
+    </div>
+
+    <div class="faq">
+      <div class="card faq-item">
+        <h3 data-i18n="faq.q1">为什么我的耳机没有出现？</h3>
+        <p data-i18n="faq.a1">「健康」只记录 iPhone 估算的耳机播放音量，AirPods、Beats 以及部分经过认证的耳机才会有数据。可以在「健康 → 浏览 → 听力 → 耳机音频音量」里确认是否有记录。</p>
+      </div>
+      <div class="card faq-item">
+        <h3 data-i18n="faq.q2">导出文件很大，会卡吗？</h3>
+        <p data-i18n="faq.a2">不会一次性读进内存，而是边解压边扫描，几百 MB 到几 GB 的导出都能处理。手机上解析大文件可能需要一两分钟，请保持页面打开。</p>
+      </div>
+      <div class="card faq-item">
+        <h3 data-i18n="faq.q3">数据安全吗？</h3>
+        <p data-i18n="faq.a3">全部解析与统计都在你的浏览器里完成，没有任何请求把数据发出去。这个站点没有后端，也没有排行服务器。</p>
+      </div>
+    </div>
+
+    <p class="privacy">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="2.5"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>
+      <span data-i18n="intro.privacy">文件只在本机处理，不会上传到任何服务器</span>
+    </p>
+
+    <div class="footer">
+      <span data-i18n="footer.note">LifeTrack 不隶属于 Apple。AirPods 是 Apple Inc. 的商标。健康数据只在本机处理。</span>
+      <br><a href="privacy.html" style="display:inline-block;padding:6px 0;color:var(--muted);text-decoration:none;border-bottom:1px solid var(--hair)">隐私说明</a>
+    </div>
+  </section>
+
+  <!-- ---------------- busy ---------------- -->
+  <section class="view" id="busy" hidden>
+    <div class="card busy-card">
+      <div class="ring">
+        <svg viewBox="0 0 120 120" aria-hidden="true">
+          <defs>
+            <linearGradient id="ringGrad" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#7dd3fc"/><stop offset="1" stop-color="#f0abfc"/>
+            </linearGradient>
+          </defs>
+          <circle class="ring-track" cx="60" cy="60" r="52"/>
+          <circle class="ring-fill" id="ringFill" cx="60" cy="60" r="52" stroke-dasharray="326.7" stroke-dashoffset="326.7"/>
+        </svg>
+        <div class="ring-label" id="pct">0%</div>
+      </div>
+
+      <p class="busy-title" id="busyTitle">正在解析</p>
+
+      <div class="busy-steps" id="busySteps">
+        <span data-stage="read" data-i18n="busy.stage.read">读取</span>
+        <span data-stage="unzip" data-i18n="busy.stage.unzip">解压</span>
+        <span data-stage="scan" data-i18n="busy.stage.scan">扫描</span>
+        <span data-stage="finish" data-i18n="busy.stage.finish">汇总</span>
+      </div>
+
+      <div class="busy-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="busyBarWrap">
+        <i id="busyBar"></i>
+      </div>
+
+      <p class="busy-text" id="busyText">—</p>
+      <p class="busy-elapsed" id="busyElapsed"></p>
+      <button class="pill-btn ghost" id="cancel" data-i18n="busy.cancel">取消</button>
+    </div>
+  </section>
+
+  <!-- ---------------- dashboard ---------------- -->
+  <section class="view" id="dash" hidden>
+    <div id="dashBody"></div>
+  </section>
+</main>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
