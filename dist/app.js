@@ -1161,7 +1161,14 @@ async function parseFile(file) {
     }
   }
   document.documentElement.dataset.parser = "main";
-  return scanFile(file, parseProgress);
+  try {
+    return await scanFile(file, parseProgress);
+  } catch (err) {
+    if (err && err.code) throw err;
+    const e = new Error((err && err.message) || "unknown");
+    e.code = "parse_failed";
+    throw e;
+  }
 }
 
 function parseInWorker(file) {
@@ -1196,7 +1203,8 @@ function parseInWorker(file) {
       }
     };
     worker.onerror = (e) => {
-      const err = new Error("worker_crashed");
+      const err = new Error((e && e.message) || "worker_crashed");
+      err.code = "worker_crashed";
       if (!e || !e.message) err.fatal = false;
       finish(reject, err);
       if (e && e.preventDefault) e.preventDefault();
@@ -1222,11 +1230,14 @@ async function handleFile(file) {
     setData(data);
   } catch (err) {
     busyStop();
-    const code = (err && err.code) || (err && err.message === "cancelled" ? "cancelled" : "read_failed");
+    const code = (err && err.code) || (err && err.message === "cancelled" ? "cancelled" : "parse_failed");
     show("intro");
     if (code === "cancelled") return;
     const box = $("#introErr");
-    box.textContent = t("err." + code) === "err." + code ? t("err.read_failed") : t("err." + code);
+    const known = t("err." + code) !== "err." + code;
+    const main = known ? t("err." + code) : t("err.read_failed");
+    const detail = [code, (err && err.message) || ""].filter(Boolean).join(" · ");
+    box.innerHTML = `<b>${esc(main)}</b><span class="err-detail" title="${esc(navigator.userAgent)}">${esc(detail)}</span>`;
     box.hidden = false;
   } finally {
     busyStop();

@@ -46,11 +46,15 @@ const dict = {
 
     "busy.cancel": "取消",
 
-    "err.not_health": "这个压缩包里没有找到 Apple 健康的导出文件（导出.xml）。",
-    "err.zip_broken": "压缩包似乎损坏了，换一个再试。",
-    "err.zip_encrypted": "压缩包有密码，无法读取。",
-    "err.too_large": "文件太大了，浏览器内存不够。",
-    "err.read_failed": "读取失败，请重试。",
+  "err.not_health": "这个压缩包里没有找到 Apple 健康的记录（导出.xml）。",
+  "err.read_failed": "读取失败，请重试。如果一直失败，把下面这行提示发给我。",
+  "err.empty_file": "这个文件是空的（0 字节）。多半是 iCloud 里的文件还没下载完：先到「文件」里点开它一次，等下载完再选。",
+  "err.not_zip": "这不是一个 ZIP 压缩包。iPhone 导出的文件应该叫「导出.zip」；如果选的是 .xml，那个文件需要直接是 Apple 健康的导出文件。",
+  "err.unzip_failed": "解压到一半失败了，文件可能没下载完整。重新从「健康」里导出一份再试。",
+  "err.parse_failed": "解析时出错了。",
+  "err.too_large": "文件太大，浏览器内存不够。换用电脑打开，或先解压、只上传里面的 export.xml。",
+
+  "err.zip_encrypted": "压缩包有密码，无法读取。",
 
     "nav.all": "全部耳机",
     "nav.allMeta": "累计 {h} 小时",
@@ -289,11 +293,15 @@ const dict = {
 
     "busy.cancel": "Cancel",
 
-    "err.not_health": "No Apple Health export (export.xml) was found in that archive.",
-    "err.zip_broken": "That archive looks damaged. Try another copy.",
-    "err.zip_encrypted": "That archive is password protected.",
-    "err.too_large": "The file is too large for the browser's memory.",
-    "err.read_failed": "Could not read the file. Please try again.",
+  "err.not_health": "No Apple Health records were found in that archive.",
+  "err.read_failed": "Could not read that file. Try again — if it keeps failing, send me the line below.",
+  "err.empty_file": "That file is empty (0 bytes). Usually an iCloud file that has not finished downloading — open it once in Files, then pick it again.",
+  "err.not_zip": "That is not a ZIP archive. The iPhone export is called “export.zip”; an .xml file must itself be the Apple Health export.",
+  "err.unzip_failed": "Unzipping failed halfway — the file is probably incomplete. Export a fresh copy from Health and try again.",
+  "err.parse_failed": "Parsing failed.",
+  "err.too_large": "The file is too large for this browser's memory. Use a computer, or unzip it and upload the export.xml inside.",
+
+  "err.zip_encrypted": "That archive is password protected.",
 
     "nav.all": "All headphones",
     "nav.allMeta": "{h} hours total",
