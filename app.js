@@ -493,11 +493,11 @@ function stepsSection(g) {
   const w7 = windowSum(all.steps, 7);
 
   const periods = [
+    { k: "st.all", v: allTotal, days: allDays, note: "", all: true },
     { k: "st.year", v: yTotal, days: yDays, note: String(dayDate(endIdx).getUTCFullYear()) },
     { k: "st.6m", v: w6.total, days: w6.days, note: "" },
     { k: "st.30", v: w30.total, days: w30.days, note: "" },
     { k: "st.7", v: w7.total, days: w7.days, note: "" },
-    { k: "st.all", v: allTotal, days: allDays, note: "", all: true },
   ];
 
   return `<div class="sec-body">
@@ -885,16 +885,18 @@ function specs(section, ctx) {
           months.push({ label: monthLabel(dt.getUTCMonth()), v: s });
         }
         return Ch.areaLine({
-          w, h: 190,
+          w, h: 214,
           values: months.map((m) => m.v),
           labels: months.map((m) => m.label),
+          valueLabels: true,
+          fmt: (v) => wan(v),
           aria: "steps, last 12 months",
         });
       },
-      dist: (w) => areaOf(w, ctx.dist, 120),
-      steplen: (w) => areaOf(w, (trimToData(d.days.steplen.slice(range.from, range.to + 1), range.from) || {}).values || [], 100),
-      speed: (w) => areaOf(w, (trimToData(d.days.speed.slice(range.from, range.to + 1), range.from) || {}).values || [], 100),
-      flights: (w) => areaOf(w, ctx.flights, 100),
+      dist: (w) => areaOf(w, ctx.dist, 130, false, (v) => f1(v, 1) + " km"),
+      steplen: (w) => areaOf(w, (trimToData(d.days.steplen.slice(range.from, range.to + 1), range.from) || {}).values || [], 110, false, (v) => f1(v, 1) + " cm"),
+      speed: (w) => areaOf(w, (trimToData(d.days.speed.slice(range.from, range.to + 1), range.from) || {}).values || [], 110, false, (v) => f1(v, 2)),
+      flights: (w) => areaOf(w, ctx.flights, 110, false, (v) => fInt(v)),
     };
   }
 
@@ -949,7 +951,7 @@ function specs(section, ctx) {
   return {};
 }
 
-function areaOf(w, values, h, pctScale) {
+function areaOf(w, values, h, pctScale, fmt) {
   const clean = values.filter((x) => x != null && x > 0);
   const { values: v } = bucketSeries(values, values.length);
   const arr = v.map((x) => (x == null ? 0 : x));
@@ -959,7 +961,12 @@ function areaOf(w, values, h, pctScale) {
     const pad = (hi - lo) * 0.25;
     floor = Math.max(0, lo - (pad || hi * 0.05));
   }
-  return Ch.areaLine({ w, h, values: arr, floor, aria: pctScale ? "double support" : "series" });
+  return Ch.areaLine({
+    w, h, values: arr, floor,
+    peakLabel: true,
+    fmt: fmt || ((v) => wan(v)),
+    aria: pctScale ? "double support" : "series",
+  });
 }
 
 const MON_SHORT = ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12"];

@@ -14,6 +14,7 @@ import { cp, mkdir, readFile, writeFile, rm, readdir, stat } from "node:fs/promi
 import { existsSync } from "node:fs";
 
 const DIST = "dist";
+const SITE_URL = process.env.SITE_URL || "https://lifetrack-cwb.pages.dev";
 const LIB = ["zip.js", "parse-core.js", "scan.js", "scan-worker.js", "charts.js", "i18n.js", "skins.js", "persona.js", "insights.js"];
 
 await rm(DIST, { recursive: true, force: true });
@@ -26,6 +27,8 @@ for (const f of LIB) await cp(`lib/${f}`, `${DIST}/lib/${f}`);
 let html = await readFile("index.html", "utf8");
 const hook = '<script>window.__SAMPLE_URL__ = "data/demo.json"; window.__DEMO__ = true;</script>\n';
 html = html.replace('<script type="module" src="app.js"></script>', `${hook}<script type="module" src="app.js"></script>`);
+html = html.replace('<meta property="og:image" content="og.png">', `<meta property="og:image" content="${SITE_URL}/og.png">`);
+html = html.replace('content="og.png"', `content="${SITE_URL}/og.png"`);
 await writeFile(`${DIST}/index.html`, html);
 
 if (!existsSync("data/demo.json")) {

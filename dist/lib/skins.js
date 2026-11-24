@@ -1,4 +1,4 @@
-/* Six skins. A skin is a hue and a saturation; the whole palette derives from it. */
+/* Five skins. A skin is a hue and a saturation; the whole palette derives from it. */
 
 const STORE = "vitalhours.skin";
 
@@ -8,7 +8,6 @@ export const SKINS = [
   { id: "ocean", name: "海洋", en: "Ocean", h: 198, s: 58 },
   { id: "rose", name: "玫瑰", en: "Rose", h: 340, s: 54 },
   { id: "amber", name: "琥珀", en: "Amber", h: 36, s: 56 },
-  { id: "graphite", name: "石墨", en: "Graphite", h: 222, s: 8 },
 ];
 
 const clamp = (n) => Math.max(0, Math.min(100, n));
@@ -18,6 +17,7 @@ export function paint(skin) {
   const { h, s } = skin;
   root.style.setProperty("--tint", `${h} 92% 82%`);
   root.style.setProperty("--tint-2", `${(h + 40) % 360} 90% 76%`);
+  root.style.setProperty("--tint-3", `${(h + 16) % 360} 92% 88%`);
   root.style.setProperty("--orb-a", `hsl(${h} 88% 58% / .52)`);
   root.style.setProperty("--orb-b", `hsl(${(h + 46) % 360} 82% 62% / .46)`);
   root.style.setProperty("--orb-c", `hsl(${(h - 34 + 360) % 360} 86% 56% / .34)`);
@@ -40,7 +40,8 @@ export function save(id) {
 }
 
 export function swatch(skin) {
-  return `radial-gradient(circle at 30% 26%, hsl(${skin.h} 88% 62%) 0%, transparent 62%),
-          radial-gradient(circle at 74% 70%, hsl(${(skin.h + 50) % 360} 80% 64%) 0%, transparent 66%),
+  const sat = Math.max(40, Math.min(92, skin.s + 40));
+  return `radial-gradient(circle at 30% 26%, hsl(${skin.h} ${sat}% 62%) 0%, transparent 62%),
+          radial-gradient(circle at 74% 70%, hsl(${(skin.h + 50) % 360} ${sat - 8}% 64%) 0%, transparent 66%),
           #080b16`;
 }
